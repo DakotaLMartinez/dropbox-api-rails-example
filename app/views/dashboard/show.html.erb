@@ -1,16 +1,12 @@
-<h1>Photo viewer</h1>
+<h1>Snippets</h1>
 
-<div class="photos">
+<div class="snippets">
   <% files = dropbox.ls %>
   <% if files.empty? %>
     No photos
   <% else %>
     <% dropbox.ls.each do |file| %>
-      <% if file.mime_type.match('image') %>
-        <div class="photo">
-        <%= image_tag file.direct_url.url %>
-        </div>
-      <% end %>
+      <%= file %>
     <% end %>
   <% end %>
 </div>

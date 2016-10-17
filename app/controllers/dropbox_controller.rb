@@ -22,11 +22,23 @@ class DropboxController < ApplicationController
       session[:dropbox_token] = access_token.token
       session[:dropbox_secret] = access_token.secret
       session[:dropbox_uid] = params[:uid]
+      create_folders
+      render json: @response
       flash[:notice] = 'Successfully connected to Dropbox!'
     rescue OAuth::Unauthorized => e
       flash[:error] = "Couldn't authorize with Dropbox (#{e.message})"
     end
-    redirect_to "/"
+  end
+
+  private 
+
+  def create_folders
+    client = Dropbox::API::Client.new(token: session[:dropbox_token], secret: session[:dropbox_secret])
+      
+    begin client.mkdir('vscode') rescue {} end
+    begin client.mkdir('sublime') rescue {} end
+    begin client.mkdir('sublime/User') rescue {} end
+    @response = client.ls
   end
 
 end
