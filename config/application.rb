@@ -27,5 +27,6 @@ module DropboxApiRailsExample
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
     config.from_file 'settings.yml'
+    config.from_file 'settings.local.yml'
   end
 end
