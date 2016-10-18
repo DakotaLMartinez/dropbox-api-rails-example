@@ -23,14 +23,30 @@ class DropboxController < ApplicationController
       session[:dropbox_secret] = access_token.secret
       session[:dropbox_uid] = params[:uid]
       create_folders
-      render json: @response
       flash[:notice] = 'Successfully connected to Dropbox!'
     rescue OAuth::Unauthorized => e
       flash[:error] = "Couldn't authorize with Dropbox (#{e.message})"
     end
+    redirect_to "/"
+  end
+
+  def add_file 
+    set_client
+    @client.upload snippet_params[:name], snippet_params[:body]
+    redirect_to "/"
   end
 
   private 
+
+  def snippet_params
+    params.require(:snippet).permit(:name, :body)
+  end
+
+  def set_client 
+    consumer      = Dropbox::API::OAuth.consumer(:authorize)
+    request_token = consumer.get_request_token
+    @client = Dropbox::API::Client.new(token: session[:dropbox_token], secret: session[:dropbox_secret])
+  end
 
   def create_folders
     client = Dropbox::API::Client.new(token: session[:dropbox_token], secret: session[:dropbox_secret])
